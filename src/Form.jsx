@@ -1,99 +1,792 @@
-// Updated Full 3-Step Form with Fixed renderStepBar Error
 import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { MultiSelect } from "primereact/multiselect";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
-import { Checkbox } from "@/components/ui/checkbox";
+
+import { FORM_DEFAULT_VALUES } from "./utils/constants";
+import CustomerDetails from "./components/form/CustomerDetails";
+import VehicleDetails from "./components/form/VehicleDetails";
+import PolicyDetails from "./components/form/PolicyDetails";
+import NewPolicyDetails from "./components/form/NewPolicyDetails";
+import PaymentInsurance from "./components/form/PaymentInsurance";
+import PaymentCustomer from "./components/form/PaymentCustomer";
+import PUCDetails from "./components/form/PUCDetails";
 
 export default function CustomerDetailsForm() {
-  const handleSubmit = async () => {
+  const [multiStepFormData, setMultiStepFormData] =
+    useState(FORM_DEFAULT_VALUES);
+
+  const [step, setStep] = useState(1);
+
+  const onPrevStepChange = () => {
+    setStep((prev) => prev - 1);
+  };
+
+  const onNextStepChange = (data) => {
+    setMultiStepFormData((prev) => ({ ...prev, [`step${step}`]: data }));
+    setStep((prev) => prev + 1);
+  };
+
+  const handleFormSubmit = async (data) => {
+    const {
+      customerType,
+      title,
+      customerName,
+      ucName,
+      fatherName,
+      dob,
+      companyName,
+      primaryPhone,
+      whatsappSame,
+      whatsappNumber,
+      pincode,
+      country,
+      state,
+      city,
+      locality,
+      address,
+      serviceNumber,
+    } = multiStepFormData.step1;
+    const {
+      proposalType,
+      policyType,
+      receiptNumber,
+      receiptDate,
+      vehicleYear,
+      registrationNumber,
+      registrationDate,
+      chassisNumber,
+      engineNumber,
+      manufacturingYear,
+      rtoState,
+      rtoCity,
+      product,
+      manufacturerType,
+      model,
+      varience,
+      fuelType,
+    } = multiStepFormData.step2;
+    const {
+      previousPolicyAvailable,
+      previousPolicyType,
+      previousInsurer,
+      policyNumber,
+      previousPolicyStartDate,
+      previousPolicyEndDate,
+      odOnlyPolicyStartDate,
+      odOnlyPolicyEndDate,
+      tpOnlyPolicyStartDate,
+      tpOnlyPolicyEndDate,
+      anyClaim,
+      ncb,
+    } = multiStepFormData.step3;
+    const {
+      newPolicyStartDate,
+      newPolicyEndDate,
+      newODPolicyStartDate,
+      newODPolicyEndDate,
+      newTPPolicyStartDate,
+      newTPPolicyEndDate,
+      newNcb,
+      brockerName,
+      newPolicyNumber,
+      insurerName,
+      policyIssueDate,
+      ivd,
+      addon,
+      odAmount,
+      tpAmount,
+      odTpAmount,
+      gstAmount,
+      totalPremiumWithGST,
+      breakingCharge,
+      waiverAmount,
+      netPayable,
+    } = multiStepFormData.step4;
+    const {
+      modeOfInsurancePayment,
+      selectedDebitCard,
+      selectedCreditCard,
+      selectedPhonePe,
+      selectedNetBanking,
+      selectedGooglePay,
+      debitCardAmount,
+      creditCardAmount,
+      insuranceGoogleAmount,
+      insurancePhonePeAmount,
+      totalInsuranceAgencyAmount,
+      insuranceNetBankingAmount,
+      insuranceNeftAmount,
+      insuranceChequeAmount,
+      cashAmount,
+      dateOfInsurancePayment,
+      insuranceTransactionId,
+    } = multiStepFormData.step5;
+    const {
+      modeOfCustomerPayment,
+      paymentReceivedStatus,
+      dueAmount,
+      paymentClearDate,
+      pendingPaymentComments,
+      customerCashAmount,
+      customerDebitCardAmount,
+      customerCreditCardAmount,
+      customerQrAmount,
+      dateOfCustomerPayment,
+      customerTransactionId,
+      customerChequeAmount,
+      customerGooglePayAmount,
+      customerNetBankingAmount,
+      customerPhonePeAmount,
+      customerNeftAmount,
+    } = multiStepFormData.step6;
+    const {
+      callExecutive,
+      fieldExecutive,
+      policyUnderwritterExecutive,
+      pucCertificate,
+      pucStartDate,
+      pucEndDate,
+      remarks,
+    } = data;
+
     const payload = {
       projectKey: "VW50aXRsZSBQcm9qZWN0MTc0MDM4ODgxMjc0NQ==",
       email: "",
       mobile: primaryPhone,
-      name: "",
+      name: customerName,
       audienceId: "",
-      paramList: [
-        {
-          paramKey: "mobile",
-          paramValue: primaryPhone,
-        },
-        {
-          paramKey: "pincode",
-          paramValue: pincode,
-        },
-        {
-          paramKey: "proposal_type",
-          paramValue: proposalType,
-        },
-        {
-          paramKey: "policy_type",
-          paramValue: policyType,
-        },
-        {
-          paramKey: "model",
-          paramValue: model,
-        },
-        {
-          paramKey: "fuel_type",
-          paramValue: fuelType,
-        },
-        {
-          paramKey: "variant",
-          paramValue: variant,
-        },
-        {
-          paramKey: "manufacturer_type",
-          paramValue: manufacturerType,
-        },
-        {
-          paramKey: "vehicle_class",
-          paramValue: vehicleClass,
-        },
-        {
-          paramKey: "receipt_number",
-          paramValue: receiptNumber,
-        },
-        {
-          paramKey: "registration_number",
-          paramValue: registrationNumber,
-        },
-        {
-          paramKey: "registration_date",
-          paramValue: registrationDate,
-        },
-        {
-          paramKey: "od_amount",
-          paramValue: odAmount.toString(),
-        },
-        {
-          paramKey: "tp_amount",
-          paramValue: tpAmount.toString(),
-        },
-        {
-          paramKey: "gst_amount",
-          paramValue: gstAmount.toString(),
-        },
-        {
-          paramKey: "breaking_charge",
-          paramValue: breakingCharge.toString(),
-        },
-        {
-          paramKey: "waiver_amount",
-          paramValue: waiverAmount.toString(),
-        },
-      ],
+      paramList: {
+        projectKey: "VW50aXRsZSBQcm9qZWN0MTc0MDM4ODgxMjc0NQ==",
+        audienceId: "_id (number)",
+        audience_id: "",
+        ios_fcm_token: "",
+        email: "",
+        android_fcm_token: "",
+        name: customerName,
+        updated: "",
+        web_fcm_token: "",
+        mobile: primaryPhone,
+        paramList: [
+          {
+            paramKey: "google_pay_amount_paid_by_customer",
+            paramValue: customerGooglePayAmount,
+          },
+          {
+            paramKey: "tp_policy_end_date",
+            paramValue: tpOnlyPolicyEndDate,
+          },
+          {
+            paramKey: "year",
+            paramValue: vehicleYear,
+          },
+          {
+            paramKey: "od_policy_start_date",
+            paramValue: odOnlyPolicyStartDate,
+          },
+          {
+            paramKey: "previous_policy_number",
+            paramValue: policyNumber,
+          },
+          {
+            paramKey: "mode_of_payment_by_customer",
+            // paramValue: "",
+            paramValue: modeOfCustomerPayment.join(","),
+          },
+          {
+            paramKey: "insurer_name",
+            paramValue: insurerName,
+          },
+          {
+            paramKey: "uc_name",
+            paramValue: ucName,
+          },
+          // {
+          //   paramKey: "total_payout_by_insurance_company",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "new_policy_start_date",
+            paramValue: newPolicyStartDate,
+          },
+          {
+            paramKey: "gst_amount",
+            paramValue: gstAmount,
+          },
+          {
+            paramKey: "total_amount_paid_to_insurance_agency",
+            paramValue: totalInsuranceAgencyAmount,
+          },
+          {
+            paramKey: "google_pay_details",
+            paramValue: selectedGooglePay,
+          },
+          {
+            paramKey: "model",
+            paramValue: model,
+          },
+          {
+            paramKey: "state",
+            paramValue: state,
+          },
+          {
+            paramKey: "policy_issue_date",
+            paramValue: policyIssueDate,
+          },
+          // {
+          //   paramKey: "od_percent_to_agent",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "cheque_amount_paid_by_customer",
+            paramValue: customerChequeAmount,
+          },
+          {
+            paramKey: "pincode",
+            paramValue: pincode,
+          },
+          {
+            paramKey: "mode_of_payment_to_insurance_company",
+            // paramValue: "",
+            paramValue: modeOfInsurancePayment.join(","),
+          },
+          // {
+          //   paramKey: "manufacturing_month",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "prev_telecaller_name",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "cash_amount_paid_to_insurance_company",
+            paramValue: cashAmount,
+          },
+          {
+            paramKey: "locality",
+            paramValue: locality,
+          },
+          {
+            paramKey: "new_tp_policy_start_date",
+            paramValue: newTPPolicyStartDate,
+          },
+          // {
+          //   paramKey: "netbanking_details_of_customer",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "breaking_charge",
+            paramValue: breakingCharge,
+          },
+          {
+            paramKey: "policy_type",
+            paramValue: policyType,
+          },
+          {
+            paramKey: "total_amount_recieved", // customer all amounts sum
+            paramValue: `${
+              Number(debitCardAmount) +
+              Number(creditCardAmount) +
+              Number(insuranceGoogleAmount) +
+              Number(insurancePhonePeAmount) +
+              Number(totalInsuranceAgencyAmount) +
+              Number(insuranceNetBankingAmount) +
+              Number(insuranceNeftAmount) +
+              Number(insuranceChequeAmount) +
+              Number(cashAmount)
+            }`,
+          },
+          {
+            paramKey: "credit_card_amount_paid_to_insurance_company",
+            paramValue: creditCardAmount,
+          },
+          {
+            paramKey: "netbanking_amount_paid_by_customer",
+            paramValue: customerNetBankingAmount,
+          },
+          // {
+          //   paramKey: "vehicle_class",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "company_name",
+            paramValue: companyName,
+          },
+          // {
+          //   paramKey: "additional_contact_details",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "new_od_policy_end_date",
+            paramValue: newODPolicyEndDate,
+          },
+          // {
+          //   paramKey: "cubic_capacity",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "new_od_policy_start_date",
+            paramValue: newODPolicyStartDate,
+          },
+          // {
+          //   paramKey: "mode_of_payment",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "previous_policy",
+            paramValue: previousPolicyAvailable,
+          },
+          {
+            paramKey: "manufacturer_type",
+            paramValue: manufacturerType,
+          },
+          {
+            paramKey: "date_of_payment_to_insurance_company",
+            paramValue: dateOfInsurancePayment,
+          },
+          // {
+          //   paramKey: "total_payout_pending_to_agent",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "netbanking_details",
+            paramValue: selectedNetBanking,
+          },
+          {
+            paramKey: "city",
+            paramValue: city,
+          },
+          {
+            paramKey: "tp_policy_start_date",
+            paramValue: tpOnlyPolicyStartDate,
+          },
+          {
+            paramKey: "date_of_birth",
+            paramValue: dob,
+          },
+          {
+            paramKey: "date_of_payment_by_customer",
+            paramValue: dateOfCustomerPayment,
+          },
+          {
+            paramKey: "new_tp_policy_end_date",
+            paramValue: newTPPolicyEndDate,
+          },
+          // {
+          //   paramKey: "od_and_net_percent_by_insurance_company",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "previous_policy_claim",
+            paramValue: anyClaim,
+          },
+          {
+            paramKey: "ncb",
+            paramValue: ncb,
+          },
+          {
+            paramKey: "debit_card_amount_paid_by_customer",
+            paramValue: customerDebitCardAmount,
+          },
+          {
+            paramKey: "phone_pe_amount_paid_by_customer",
+            paramValue: customerPhonePeAmount,
+          },
+          {
+            paramKey: "policy_number",
+            paramValue: newPolicyNumber,
+          },
+          // {
+          //   paramKey: "policy_end_date",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "payout_received_by_insurance_company",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "policy_start_date",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "utr_or_transaction_id_or_cheque_number",
+            paramValue: insuranceTransactionId,
+          },
+          {
+            paramKey: "cash_amount_paid_by_customer",
+            paramValue: customerCashAmount,
+          },
+          // {
+          //   paramKey: "net_percent_by_insurance_company",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "cheque_clear_on_own_bank_detail",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "phonepe_amount_paid_to_insurance_company",
+            paramValue: insurancePhonePeAmount,
+          },
+          {
+            paramKey: "utr_or_transaction_id_or_cheque_details_of_customer",
+            paramValue: customerTransactionId,
+          },
+          {
+            paramKey: "address",
+            paramValue: address,
+          },
+          // {
+          //   paramKey: "net_percent_to_agent",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "netbanking_amount_paid_to_insurance_company",
+            paramValue: insuranceNetBankingAmount,
+          },
+          {
+            paramKey: "previous_policy_type",
+            paramValue: previousPolicyType,
+          },
+          {
+            paramKey: "pollution_under_control_certificate_number",
+            paramValue: pucCertificate,
+          },
+          // {
+          //   paramKey: "alternate",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "puc_end_date",
+            paramValue: pucEndDate,
+          },
+          {
+            paramKey: "credit_card_amount_paid_by_customer",
+            paramValue: customerCreditCardAmount,
+          },
+          {
+            paramKey: "receipt_number",
+            paramValue: receiptNumber,
+          },
+          {
+            paramKey: "call_executive_reference",
+            // paramValue: "",
+            paramValue: callExecutive.join(","),
+          },
+          {
+            paramKey: "broker_or_agency_name",
+            paramValue: brockerName,
+          },
+          {
+            paramKey: "is_whatsapp_number_same_as_primary_number",
+            paramValue: whatsappSame,
+          },
+          // {
+          //   paramKey: "payout_pending_by_insurance_company",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "type_of_vehicle",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "financed_by",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "date",
+            paramValue: receiptDate,
+          },
+          {
+            paramKey: "country",
+            paramValue: country,
+          },
+          {
+            paramKey: "neft_or_rtgs_amount_paid_by_customer",
+            paramValue: customerNeftAmount,
+          },
+          {
+            paramKey: "service_book_number",
+            paramValue: serviceNumber,
+          },
+          // {
+          //   paramKey: "vehicle_category",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "chassis_number",
+            paramValue: chassisNumber,
+          },
+          {
+            paramKey: "customer_cheque_number",
+            paramValue: customerTransactionId,
+          },
+          {
+            paramKey: "qr_amount_paid_by_customer",
+            paramValue: customerQrAmount,
+          },
+          {
+            paramKey: "rto_city",
+            paramValue: rtoCity,
+          },
+          {
+            paramKey: "variant",
+            paramValue: varience,
+          },
+          // {
+          //   paramKey: "amount_due",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "tag",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "agent_code",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "fuel_type",
+            paramValue: fuelType,
+          },
+          // {
+          //   paramKey: "total_payout_received_by_agent",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "field_executive_reference",
+            // paramValue: "",
+            paramValue: fieldExecutive.join(","),
+          },
+          {
+            paramKey: "whatsapp_number",
+            paramValue: whatsappNumber,
+          },
+          // {
+          //   paramKey: "seat_including_driver",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "commission_detail_by_insurance_company",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "product_name",
+            paramValue: product,
+          },
+          {
+            paramKey: "debit_card_details",
+            paramValue: selectedDebitCard, // need to discuss
+          },
+          // {
+          //   paramKey: "customer_chq_date",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "financed",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "payment_received_status",
+            paramValue: paymentReceivedStatus,
+          },
+          {
+            paramKey: "google_pay_amount_paid_to_insurance_company",
+            paramValue: insuranceGoogleAmount,
+          },
+          // {
+          //   paramKey: "od_percent_by_insurance_company",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "registration_date",
+            paramValue: registrationDate,
+          },
+          {
+            paramKey: "credit_card_details",
+            paramValue: selectedCreditCard,
+          },
+          {
+            paramKey: "father_name",
+            paramValue: fatherName,
+          },
+          {
+            paramKey: "idv",
+            paramValue: ivd,
+          },
+          {
+            paramKey: "expected_pending_payment_clear_date",
+            paramValue: paymentClearDate,
+          },
+          {
+            paramKey: "customer_type",
+            paramValue: customerType,
+          },
+          {
+            paramKey: "rto_state",
+            paramValue: rtoState,
+          },
+          {
+            paramKey: "addon",
+            paramValue: addon,
+          },
+          {
+            paramKey: "registration_number",
+            paramValue: registrationNumber,
+          },
+          {
+            paramKey: "debit_card_amount_paid_to_insurance_company",
+            paramValue: debitCardAmount,
+          },
+          {
+            paramKey: "due_amount_left_by_customer",
+            paramValue: dueAmount,
+          },
+          // {
+          //   paramKey: "commission_detail_to_agent",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "od_amount",
+            paramValue: odAmount,
+          },
+          {
+            paramKey: "tp_amount",
+            paramValue: tpAmount,
+          },
+          {
+            paramKey: "title",
+            paramValue: title,
+          },
+          {
+            paramKey: "manufacturing_year",
+            paramValue: manufacturingYear,
+          },
+          // {
+          //   paramKey: "customer_bank",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "pending_payment_comments",
+            paramValue: pendingPaymentComments,
+          },
+          // {
+          //   paramKey: "total_payout_to_agent",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "total_amount_paid_by_customer", // sum of all select amount paied by customer
+            paramValue: `${
+              Number(customerCashAmount) +
+              Number(customerDebitCardAmount) +
+              Number(customerCreditCardAmount) +
+              Number(customerQrAmount) +
+              Number(customerChequeAmount) +
+              Number(customerGooglePayAmount) +
+              Number(customerNetBankingAmount) +
+              Number(customerPhonePeAmount) +
+              Number(customerNeftAmount)
+            }`,
+          },
+          {
+            paramKey: "engine_number",
+            paramValue: engineNumber,
+          },
+          {
+            paramKey: "previous_policy_expiry_date",
+            paramValue: previousPolicyEndDate,
+          },
+          // {
+          //   paramKey: "company",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "waiver_amount",
+            paramValue: waiverAmount,
+          },
+          // {
+          //   paramKey: "source_name",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "proposal_type",
+            paramValue: proposalType,
+          },
+          {
+            paramKey: "puc_start_date",
+            paramValue: pucStartDate,
+          },
+          {
+            paramKey: "previous_insurer_name",
+            paramValue: previousInsurer,
+          },
+          {
+            paramKey: "new_policy_end_date",
+            paramValue: newPolicyEndDate,
+          },
+          {
+            paramKey: "neft_or_rtgs_amount_paid_to_insurance_company",
+            paramValue: insuranceNeftAmount,
+          },
+          {
+            paramKey: "phonepe_details",
+            paramValue: selectedPhonePe,
+          },
+          {
+            paramKey: "total_premimum_with_gst",
+            paramValue: totalPremiumWithGST,
+          },
+          {
+            paramKey: "net_total_of_od_and_tp",
+            paramValue: odTpAmount,
+          },
+          // {
+          //   paramKey: "message",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "od_and_net_percent_to_agent",
+          //   paramValue: "",
+          // },
+          // {
+          //   paramKey: "amount_recieved",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "cheque_amount_paid_to_insurance_company",
+            paramValue: insuranceChequeAmount,
+          },
+          // {
+          //   paramKey: "cheque_clear_on_date",
+          //   paramValue: "",
+          // },
+          {
+            paramKey: "ncb_for_new_policy",
+            paramValue: newNcb,
+          },
+          {
+            paramKey: "customer_cheque_amount",
+            paramValue: customerChequeAmount,
+          },
+          {
+            paramKey: "od_policy_end_date",
+            paramValue: odOnlyPolicyEndDate,
+          },
+          {
+            paramKey: "net_payable__amount",
+            paramValue: netPayable,
+          },
+          {
+            paramKey: "previous_policy_start_date",
+            paramValue: previousPolicyStartDate,
+          },
+          {
+            paramKey: "remarks",
+            paramValue: remarks,
+          },
+          {
+            paramKey: "policy_underwriter_executive_reference",
+            paramValue: policyUnderwritterExecutive,
+          },
+        ],
+      },
     };
 
     try {
@@ -109,6 +802,8 @@ export default function CustomerDetailsForm() {
       );
       const data = await response.json();
       if (data.status) {
+        setStep(1);
+        setMultiStepFormData(FORM_DEFAULT_VALUES);
         alert("Submitted successfully to Cronberry");
       } else {
         alert("Submission failed. Try again.");
@@ -118,82 +813,6 @@ export default function CustomerDetailsForm() {
       alert("Error occurred while submitting");
     }
   };
-  const [step, setStep] = useState(1);
-  const totalSteps = 7;
-
-  const [odAmount, setOdAmount] = useState(0);
-  const [tpAmount, setTpAmount] = useState(0);
-  const [gstAmount, setGstAmount] = useState(0);
-  const [breakingCharge, setBreakingCharge] = useState(0);
-  const [waiverAmount, setWaiverAmount] = useState(0);
-
-  const [customerType, setCustomerType] = useState("Individual");
-  const [whatsappSame, setWhatsappSame] = useState("Yes");
-  const [primaryPhone, setPrimaryPhone] = useState("");
-  const [pincode, setPincode] = useState("");
-  React.useEffect(() => {
-    const fetchPincodeDetails = async () => {
-      if (pincode.length === 6) {
-        try {
-          const res = await fetch(
-            `https://api.postalpincode.in/pincode/${pincode}`
-          );
-          const data = await res.json();
-          if (data[0].Status === "Success") {
-            const postOffice = data[0].PostOffice[0];
-            setLocation({
-              country: "India",
-              state: postOffice.State,
-              city: postOffice.District,
-              localities: data[0].PostOffice.map((p) => p.Name),
-            });
-            setSelectedLocality(data[0].PostOffice[0].Name);
-          } else {
-            setLocation({ country: "", state: "", city: "", localities: [] });
-          }
-        } catch (error) {
-          console.error("Failed to fetch pincode details:", error);
-        }
-      }
-    };
-    fetchPincodeDetails();
-  }, [pincode]);
-  const [location, setLocation] = useState({
-    country: "",
-    state: "",
-    city: "",
-    localities: [],
-  });
-  const [selectedLocality, setSelectedLocality] = useState("");
-
-  const [proposalType, setProposalType] = useState("");
-  const [policyType, setPolicyType] = useState("");
-  const [previousPolicyAvailable, setPreviousPolicyAvailable] = useState("");
-  const [previousPolicyType, setPreviousPolicyType] = useState("");
-  const [previousClaim, setPreviousClaim] = useState("");
-  const [ncb, setNcb] = useState("");
-  const [customerPaymentStatus, setCustomerPaymentStatus] = useState("");
-
-  const [product, setProduct] = useState("");
-  const [vehicleClass, setVehicleClass] = useState("");
-  const [manufacturerType, setManufacturerType] = useState("");
-  const [model, setModel] = useState("");
-  const [variant, setVariant] = useState("");
-  const [fuelType, setFuelType] = useState("");
-  const [receiptNumber, setReceiptNumber] = useState("");
-  const [receiptDate, setReceiptDate] = useState("");
-  const [vehicleYear, setVehicleYear] = useState("");
-  const [registrationNumber, setRegistrationNumber] = useState("");
-  const [registrationDate, setRegistrationDate] = useState("");
-  const [chassisNumber, setChassisNumber] = useState("");
-  const [engineNumber, setEngineNumber] = useState("");
-  const [manufacturingYear, setManufacturingYear] = useState("");
-  const [rtoState, setRtoState] = useState("");
-  const [rtoCity, setRtoCity] = useState("");
-
-  const years = Array.from({ length: 35 }, (_, i) =>
-    (new Date().getFullYear() - i).toString()
-  );
 
   const renderStepBar = () => {
     const stepLabels = [
@@ -245,1008 +864,64 @@ export default function CustomerDetailsForm() {
     switch (step) {
       case 1:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Customer Type</Label>
-              <Select value={customerType} onValueChange={setCustomerType}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Customer Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Individual">Individual</SelectItem>
-                  <SelectItem value="Corporate">Corporate</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {customerType === "Corporate" ? (
-              <>
-                <div>
-                  <Label>Title</Label>
-                  <Input value="M/s" className="h-8" disabled />
-                </div>
-                <div>
-                  <Label>Company Name</Label>
-                  <Input className="h-8" placeholder="Company Name" />
-                </div>
-                <div>
-                  <Label>U/C Name</Label>
-                  <Input className="h-8" placeholder="U/C Name" />
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <Label>Title</Label>
-                  <Select>
-                    <SelectTrigger className="h-8">
-                      <SelectValue placeholder="Select Title" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Mr">Mr</SelectItem>
-                      <SelectItem value="Mrs">Mrs</SelectItem>
-                      <SelectItem value="Miss">Miss</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Customer Name</Label>
-                  <Input className="h-8" placeholder="Customer Name" />
-                </div>
-                <div>
-                  <Label>Father Name</Label>
-                  <Input className="h-8" placeholder="Father Name" />
-                </div>
-                <div>
-                  <Label>Date of Birth</Label>
-                  <Input className="h-8" type="date" />
-                </div>
-              </>
-            )}
-            <div>
-              <Label>Primary Phone</Label>
-              <Input
-                className="h-8"
-                value={primaryPhone}
-                onChange={(e) => setPrimaryPhone(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>WhatsApp Same as Phone?</Label>
-              <Select value={whatsappSame} onValueChange={setWhatsappSame}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>WhatsApp Number</Label>
-              <Input
-                className="h-8"
-                value={whatsappSame === "Yes" ? primaryPhone : ""}
-                placeholder="Enter WhatsApp Number"
-                disabled={whatsappSame === "Yes"}
-              />
-            </div>
-            <div>
-              <Label>Pincode</Label>
-              <Input
-                className="h-8"
-                value={pincode}
-                onChange={(e) => setPincode(e.target.value)}
-                placeholder="Enter Pincode"
-              />
-            </div>
-            <div>
-              <Label>Country</Label>
-              <Input className="h-8" value={location.country} disabled />
-            </div>
-            <div>
-              <Label>State</Label>
-              <Input className="h-8" value={location.state} disabled />
-            </div>
-            <div>
-              <Label>City</Label>
-              <Input className="h-8" value={location.city} disabled />
-            </div>
-            <div>
-              <Label>Locality</Label>
-              <Select
-                value={selectedLocality}
-                onValueChange={setSelectedLocality}
-              >
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Locality" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(location.localities || []).map((loc, idx) => (
-                    <SelectItem key={idx} value={loc}>
-                      {loc}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Address</Label>
-              <Input className="h-8" placeholder="Enter Address" />
-            </div>
-            <div>
-              <Label>Service Book Number</Label>
-              <Input className="h-8" placeholder="Enter Service Book Number" />
-            </div>
-          </div>
+          <CustomerDetails
+            defaultValues={multiStepFormData.step1}
+            onNextStepChange={onNextStepChange}
+          />
         );
       case 2:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label>Proposal Type</Label>
-              <Select
-                value={proposalType}
-                onValueChange={(value) => {
-                  setProposalType(value);
-                  setPolicyType("");
-                }}
-              >
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Proposal Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="New">New</SelectItem>
-                  <SelectItem value="Renewal">Renewal</SelectItem>
-                  <SelectItem value="Used">Used</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Policy Type</Label>
-              <Select value={policyType} onValueChange={setPolicyType}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Policy Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {proposalType === "New" &&
-                    ["1+5 Bundle Policy", "5 Year TP only Policy"].map(
-                      (type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      )
-                    )}
-                  {proposalType === "Renewal" &&
-                    ["Package Policy", "TP Only Policy", "OD only Policy"].map(
-                      (type) => (
-                        <SelectItem key={type} value={type}>
-                          {type}
-                        </SelectItem>
-                      )
-                    )}
-                  {proposalType === "Used" &&
-                    ["Package Policy", "TP Only Policy"].map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Receipt Number</Label>
-              <Input
-                className="h-8"
-                value={receiptNumber}
-                onChange={(e) => setReceiptNumber(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Receipt Date</Label>
-              <Input
-                type="date"
-                className="h-8"
-                value={receiptDate}
-                onChange={(e) => setReceiptDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Vehicle Year</Label>
-              <Select value={vehicleYear} onValueChange={setVehicleYear}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Registration Number</Label>
-              <Input
-                className="h-8"
-                value={registrationNumber}
-                onChange={(e) => setRegistrationNumber(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Registration Date</Label>
-              <Input
-                type="date"
-                className="h-8"
-                value={registrationDate}
-                onChange={(e) => setRegistrationDate(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Chassis Number</Label>
-              <Input
-                className="h-8"
-                value={chassisNumber}
-                onChange={(e) => setChassisNumber(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Engine Number</Label>
-              <Input
-                className="h-8"
-                value={engineNumber}
-                onChange={(e) => setEngineNumber(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Manufacturing Year</Label>
-              <Input
-                className="h-8"
-                value={manufacturingYear}
-                onChange={(e) => setManufacturingYear(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>RTO State</Label>
-              <Input
-                className="h-8"
-                value={rtoState}
-                onChange={(e) => setRtoState(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>RTO City</Label>
-              <Input
-                className="h-8"
-                value={rtoCity}
-                onChange={(e) => setRtoCity(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label>Product</Label>
-              <Select value={product} onValueChange={setProduct}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Product" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Private Car">Private Car</SelectItem>
-                  <SelectItem value="Two Wheeler">Two Wheeler</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Vehicle Class</Label>
-              <Select value={vehicleClass} onValueChange={setVehicleClass}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Vehicle Class" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Hatchback">Hatchback</SelectItem>
-                  <SelectItem value="Sedan">Sedan</SelectItem>
-                  <SelectItem value="SUV">SUV</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Manufacturer Type</Label>
-              <Select
-                value={manufacturerType}
-                onValueChange={setManufacturerType}
-              >
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Manufacturer Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Maruti">Maruti</SelectItem>
-                  <SelectItem value="Honda">Honda</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Model</Label>
-              <Select value={model} onValueChange={setModel}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Model" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Swift">Swift</SelectItem>
-                  <SelectItem value="City">City</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Variant</Label>
-              <Select value={variant} onValueChange={setVariant}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Variant" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="VXi">VXi</SelectItem>
-                  <SelectItem value="ZXi">ZXi</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Fuel Type</Label>
-              <Select value={fuelType} onValueChange={setFuelType}>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select Fuel Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Petrol">Petrol</SelectItem>
-                  <SelectItem value="Diesel">Diesel</SelectItem>
-                  <SelectItem value="Electric">Electric</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+          <VehicleDetails
+            defaultValues={multiStepFormData.step2}
+            onNextStepChange={onNextStepChange}
+            onPrevStepChange={onPrevStepChange}
+          />
         );
       case 3:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {proposalType === "Renewal" &&
-              ["Package Policy", "OD only Policy", "TP Only Policy"].includes(
-                policyType
-              ) && (
-                <>
-                  <div>
-                    <Label>Previous Policy Available</Label>
-                    <Select
-                      value={previousPolicyAvailable}
-                      onValueChange={setPreviousPolicyAvailable}
-                    >
-                      <SelectTrigger className="h-8">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {previousPolicyAvailable === "Yes" && (
-                    <>
-                      <div>
-                        <Label>Previous Policy Type</Label>
-                        <Select
-                          value={previousPolicyType}
-                          onValueChange={setPreviousPolicyType}
-                        >
-                          <SelectTrigger className="h-8">
-                            <SelectValue placeholder="Select Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="OD Policy">OD Policy</SelectItem>
-                            {!(
-                              proposalType === "Renewal" &&
-                              policyType === "Package Policy"
-                            ) && (
-                              <SelectItem value="TP Policy">
-                                TP Policy
-                              </SelectItem>
-                            )}
-                            <SelectItem value="Package Policy">
-                              Package Policy
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      {previousPolicyType === "OD Policy" && (
-                        <>
-                          {policyType === "OD only Policy" ? (
-                            <>
-                              <div>
-                                <Label>OD Policy Start Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                              <div>
-                                <Label>OD Policy End Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div>
-                                <Label>Previous Insurer</Label>
-                                <Input
-                                  className="h-8"
-                                  placeholder="Previous Insurer"
-                                />
-                              </div>
-                              <div>
-                                <Label>Policy Number</Label>
-                                <Input
-                                  className="h-8"
-                                  placeholder="Policy Number"
-                                />
-                              </div>
-                              <div>
-                                <Label>Policy Start Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                              <div>
-                                <Label>Policy End Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                            </>
-                          )}
-                          <div>
-                            <Label>Any Claim?</Label>
-                            <Select
-                              value={previousClaim}
-                              onValueChange={setPreviousClaim}
-                            >
-                              <SelectTrigger className="h-8">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Yes">Yes</SelectItem>
-                                <SelectItem value="No">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          {previousClaim === "No" && (
-                            <div>
-                              <Label>NCB %</Label>
-                              <Select value={ncb} onValueChange={setNcb}>
-                                <SelectTrigger className="h-8">
-                                  <SelectValue placeholder="Select NCB %" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {["0", "20", "25", "35", "45", "50"].map(
-                                    (n) => (
-                                      <SelectItem key={n} value={n}>
-                                        {n}%
-                                      </SelectItem>
-                                    )
-                                  )}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                        </>
-                      )}
-                      {previousPolicyType === "TP Policy" && (
-                        <>
-                          {policyType === "OD only Policy" ? (
-                            <>
-                              <div>
-                                <Label>TP Policy Start Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                              <div>
-                                <Label>TP Policy End Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                              <div>
-                                <Label>TP Policy Expiry Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div>
-                                <Label>Previous Insurer</Label>
-                                <Input
-                                  className="h-8"
-                                  placeholder="Previous Insurer"
-                                />
-                              </div>
-                              <div>
-                                <Label>Policy Number</Label>
-                                <Input
-                                  className="h-8"
-                                  placeholder="Policy Number"
-                                />
-                              </div>
-                              <div>
-                                <Label>Policy Start Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                              <div>
-                                <Label>Policy End Date</Label>
-                                <Input className="h-8" type="date" />
-                              </div>
-                            </>
-                          )}
-                        </>
-                      )}
-                      {previousPolicyType === "Package Policy" && (
-                        <>
-                          <div>
-                            <Label>Previous Insurer</Label>
-                            <Input
-                              className="h-8"
-                              placeholder="Previous Insurer"
-                            />
-                          </div>
-                          <div>
-                            <Label>Policy Number</Label>
-                            <Input
-                              className="h-8"
-                              placeholder="Policy Number"
-                            />
-                          </div>
-                          <div>
-                            <Label>Policy Start Date</Label>
-                            <Input className="h-8" type="date" />
-                          </div>
-                          <div>
-                            <Label>Policy End Date</Label>
-                            <Input className="h-8" type="date" />
-                          </div>
-                          <div>
-                            <Label>Any Claim?</Label>
-                            <Select
-                              value={previousClaim}
-                              onValueChange={setPreviousClaim}
-                            >
-                              <SelectTrigger className="h-8">
-                                <SelectValue placeholder="Select" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Yes">Yes</SelectItem>
-                                <SelectItem value="No">No</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          {previousClaim === "No" && (
-                            <div>
-                              <Label>NCB %</Label>
-                              <Select value={ncb} onValueChange={setNcb}>
-                                <SelectTrigger className="h-8">
-                                  <SelectValue placeholder="Select NCB %" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {["0", "20", "25", "35", "45", "50"].map(
-                                    (n) => (
-                                      <SelectItem key={n} value={n}>
-                                        {n}%
-                                      </SelectItem>
-                                    )
-                                  )}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-          </div>
+          <PolicyDetails
+            defaultValues={multiStepFormData.step3}
+            onNextStepChange={onNextStepChange}
+            onPrevStepChange={onPrevStepChange}
+            proposalType={multiStepFormData.step2.proposalType}
+            policyType={multiStepFormData.step2.policyType}
+          />
         );
       case 4:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {proposalType === "Renewal" &&
-              ["Package Policy", "TP Only Policy"].includes(policyType) && (
-                <>
-                  <div>
-                    <Label>New Policy Start Date</Label>
-                    <Input className="h-8" type="date" />
-                  </div>
-                  <div>
-                    <Label>New Policy End Date</Label>
-                    <Input className="h-8" type="date" />
-                  </div>
-                </>
-              )}
-            {((proposalType === "New" && policyType === "1+5 Bundle Policy") ||
-              (proposalType === "Renewal" &&
-                policyType === "OD only Policy")) && (
-              <>
-                <div>
-                  <Label>New OD Policy Start Date</Label>
-                  <Input className="h-8" type="date" />
-                </div>
-                <div>
-                  <Label>New OD Policy End Date</Label>
-                  <Input className="h-8" type="date" />
-                </div>
-              </>
-            )}
-            {((proposalType === "New" &&
-              ["1+5 Bundle Policy", "5 Year TP only Policy"].includes(
-                policyType
-              )) ||
-              (proposalType === "Renewal" &&
-                policyType === "OD only Policy")) && (
-              <>
-                <div>
-                  <Label>New TP Policy Start Date</Label>
-                  <Input className="h-8" type="date" />
-                </div>
-                <div>
-                  <Label>New TP Policy End Date</Label>
-                  <Input className="h-8" type="date" />
-                </div>
-              </>
-            )}
-            {previousClaim === "No" && (
-              <div>
-                <Label>NCB For New Policy</Label>
-                <Select value={ncb} onValueChange={setNcb}>
-                  <SelectTrigger className="h-8">
-                    <SelectValue placeholder="Select NCB %" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["0", "20", "25", "35", "45", "50"].map((n) => (
-                      <SelectItem key={n} value={n}>
-                        {n}%
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div>
-              <Label>Broker or Agency Name</Label>
-              <Select>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Option 1">Option 1</SelectItem>
-                  <SelectItem value="Option 2">Option 2</SelectItem>
-                  <SelectItem value="Option 3">Option 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Policy Number</Label>
-              <Input className="h-8" placeholder="Enter Policy Number" />
-            </div>
-            <div>
-              <Label>Insurer Name</Label>
-              <Select>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Option 1">Option 1</SelectItem>
-                  <SelectItem value="Option 2">Option 2</SelectItem>
-                  <SelectItem value="Option 3">Option 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Policy Issue Date</Label>
-              <Input className="h-8" type="date" />
-            </div>
-            <div>
-              <Label>IDV (Insured Declared Value)</Label>
-              <Input className="h-8" type="number" />
-            </div>
-            <div>
-              <Label>Addon</Label>
-              <Select>
-                <SelectTrigger className="h-8">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Addon 1">Addon 1</SelectItem>
-                  <SelectItem value="Addon 2">Addon 2</SelectItem>
-                  <SelectItem value="Addon 3">Addon 3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>OD Amount</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={odAmount}
-                onChange={(e) => setOdAmount(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label>TP Amount</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={tpAmount}
-                onChange={(e) => setTpAmount(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label>Net Total (OD + TP)</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={odAmount + tpAmount}
-                disabled
-              />
-            </div>
-            <div>
-              <Label>GST Amount</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={gstAmount}
-                onChange={(e) => setGstAmount(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label>Total Premium with GST</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={odAmount + tpAmount + gstAmount}
-                disabled
-              />
-            </div>
-            <div>
-              <Label>Breaking Charge</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={breakingCharge}
-                onChange={(e) => setBreakingCharge(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label>Waiver Amount</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={waiverAmount}
-                onChange={(e) => setWaiverAmount(Number(e.target.value))}
-              />
-            </div>
-            <div>
-              <Label>Net Payable</Label>
-              <Input
-                className="h-8"
-                type="number"
-                value={
-                  odAmount +
-                  tpAmount +
-                  gstAmount +
-                  breakingCharge -
-                  waiverAmount
-                }
-                disabled
-              />
-            </div>
-          </div>
+          <NewPolicyDetails
+            defaultValues={multiStepFormData.step4}
+            onNextStepChange={onNextStepChange}
+            onPrevStepChange={onPrevStepChange}
+            proposalType={multiStepFormData.step2.proposalType}
+            policyType={multiStepFormData.step2.policyType}
+            previousClaim={multiStepFormData.step3.anyClaim}
+          />
         );
       case 5:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <Label className="block text-base mb-2 font-medium text-gray-700">
-                Mode of Payment to Insurance Company
-              </Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {[
-                  "Cash",
-                  "Debit Card",
-                  "Cheque",
-                  "NEFT/RTGS",
-                  "Credit Card",
-                  "PhonePe",
-                  "Google Pay",
-                  "Netbanking",
-                  "QR Code",
-                ].map((mode) => (
-                  <label
-                    key={mode}
-                    className="flex items-center gap-2 text-sm font-medium text-gray-700"
-                  >
-                    <Checkbox onCheckedChange={() => {}} />
-                    {mode}
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div className="col-span-2">
-              <Label className="text-sm text-gray-600">
-                Date of Payment to Insurance Company
-              </Label>
-              <Input className="h-9 mt-1" type="date" />
-            </div>
-            <div className="col-span-2">
-              <Label className="text-sm text-gray-600">
-                UTR / Transaction ID / Cheque Details
-              </Label>
-              <Input
-                className="h-9 mt-1"
-                placeholder="Enter UTR / Transaction ID / Cheque Details"
-              />
-            </div>
-          </div>
+          <PaymentInsurance
+            defaultValues={multiStepFormData.step5}
+            onNextStepChange={onNextStepChange}
+            onPrevStepChange={onPrevStepChange}
+          />
         );
       case 6:
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="col-span-2">
-              <Label className="block text-base mb-2 font-medium text-gray-700">
-                Payment by Customer
-              </Label>
-              <div className="mb-4">
-                <Label className="text-sm text-gray-600">
-                  Payment Received Status
-                </Label>
-                <Select
-                  value={customerPaymentStatus}
-                  onValueChange={setCustomerPaymentStatus}
-                >
-                  <SelectTrigger className="h-9 mt-1">
-                    <SelectValue placeholder="Select Payment Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Full Payment Received">
-                      Full Payment Received
-                    </SelectItem>
-                    <SelectItem value="Partial Payment Received">
-                      Partial Payment Received
-                    </SelectItem>
-                    <SelectItem value="Total Due">Total Due</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {(customerPaymentStatus === "Full Payment Received" ||
-                customerPaymentStatus === "Partial Payment Received") && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                  {[
-                    "Cash",
-                    "Debit Card",
-                    "Cheque",
-                    "NEFT/RTGS",
-                    "Credit Card",
-                    "PhonePe",
-                    "Google Pay",
-                    "Netbanking",
-                    "QR Code",
-                  ].map((mode) => (
-                    <label
-                      key={`customer-${mode}`}
-                      className="flex items-center gap-2 text-sm font-medium text-gray-700"
-                    >
-                      <Checkbox checked={false} onCheckedChange={() => {}} />
-                      {mode}
-                    </label>
-                  ))}
-                </div>
-              )}
-              {(customerPaymentStatus === "Partial Payment Received" ||
-                customerPaymentStatus === "Total Due") && (
-                <>
-                  <div>
-                    <Label className="text-sm text-gray-600">
-                      Due Amount Left by Customer
-                    </Label>
-                    <Input className="h-9 mt-1" type="number" />
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-600">
-                      Expected Pending Payment Clearance Date
-                    </Label>
-                    <Input className="h-9 mt-1" type="date" />
-                  </div>
-                </>
-              )}
-              {customerPaymentStatus === "Partial Payment Received" && (
-                <div>
-                  <Label className="text-sm text-gray-600">
-                    Pending Payment Comments
-                  </Label>
-                  <Input className="h-9 mt-1" placeholder="Enter Comments" />
-                </div>
-              )}
-              {(customerPaymentStatus === "Full Payment Received" ||
-                customerPaymentStatus === "Partial Payment Received") && (
-                <div>
-                  <Label className="text-sm text-gray-600">
-                    Date of Payment by Customer
-                  </Label>
-                  <Input className="h-9 mt-1" type="date" />
-                </div>
-              )}
-              <div>
-                <Label className="text-sm text-gray-600">
-                  UTR / Transaction ID / Cheque Details
-                </Label>
-                <Input
-                  className="h-9 mt-1"
-                  placeholder="Enter UTR / Transaction ID / Cheque Details"
-                />
-              </div>
-            </div>
-          </div>
+          <PaymentCustomer
+            defaultValues={multiStepFormData.step6}
+            onNextStepChange={onNextStepChange}
+            onPrevStepChange={onPrevStepChange}
+          />
         );
       case 7:
-        const callExecutiveOptions = Array.from({ length: 100 }, (_, i) => ({
-          label: `Executive ${i + 1}`,
-          value: `Executive ${i + 1}`,
-        }));
-        const fieldExecutiveOptions = Array.from({ length: 100 }, (_, i) => ({
-          label: `Executive ${i + 1}`,
-          value: `Executive ${i + 1}`,
-        }));
         return (
-          <div className="space-y-6 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="w-full">
-                <Label className="text-sm text-gray-600 mb-2 block">
-                  Call Executive Reference
-                </Label>
-                <MultiSelect
-                  value={[]}
-                  onChange={() => {}}
-                  options={callExecutiveOptions}
-                  optionLabel="label"
-                  placeholder="Select Call Executives"
-                  display="chip"
-                  filter
-                  className="w-full p-multiselect"
-                  panelClassName="max-h-60 overflow-y-auto"
-                />
-              </div>
-              <div className="w-full">
-                <Label className="text-sm text-gray-600 mb-2 block">
-                  Field Executive Reference
-                </Label>
-                <MultiSelect
-                  value={[]}
-                  onChange={() => {}}
-                  options={fieldExecutiveOptions}
-                  optionLabel="label"
-                  placeholder="Select Field Executives"
-                  display="chip"
-                  filter
-                  className="w-full p-multiselect"
-                  panelClassName="max-h-60 overflow-y-auto"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <Label className="text-sm text-gray-600">
-                  PUC Certificate Number
-                </Label>
-                <Input
-                  className="h-9 mt-1"
-                  placeholder="Enter PUC Certificate Number"
-                />
-              </div>
-              <div>
-                <Label className="text-sm text-gray-600">PUC Start Date</Label>
-                <Input className="h-9 mt-1" type="date" />
-              </div>
-              <div>
-                <Label className="text-sm text-gray-600">PUC End Date</Label>
-                <Input className="h-9 mt-1" type="date" />
-              </div>
-            </div>
-            <div>
-              <Label className="text-sm text-gray-600">Remarks</Label>
-              <Input className="h-9 mt-1" placeholder="Enter remarks here" />
-            </div>
-          </div>
+          <PUCDetails
+            defaultValues={multiStepFormData.step7}
+            onNextStepChange={onNextStepChange}
+            onPrevStepChange={onPrevStepChange}
+            handleFormSubmit={handleFormSubmit}
+          />
         );
       default:
         return (
@@ -1261,18 +936,6 @@ export default function CustomerDetailsForm() {
     <div className="space-y-6 p-4 max-w-5xl mx-auto text-sm">
       {renderStepBar()}
       {renderStepContent()}
-      <div className="pt-6 flex justify-between">
-        {step > 1 && (
-          <Button variant="outline" onClick={() => setStep(step - 1)}>
-            Previous
-          </Button>
-        )}
-        {step < totalSteps ? (
-          <Button onClick={() => setStep(step + 1)}>Next</Button>
-        ) : (
-          <Button onClick={handleSubmit}>Submit</Button>
-        )}
-      </div>
     </div>
   );
 }
