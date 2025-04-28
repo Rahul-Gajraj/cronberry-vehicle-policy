@@ -806,7 +806,7 @@ export default function CustomerDetailsForm() {
         setMultiStepFormData(FORM_DEFAULT_VALUES);
         alert("Submitted successfully to Cronberry");
       } else {
-        alert("Submission failed. Try again.");
+        alert(data.error_msgs ?? "Submission failed. Try again.");
       }
     } catch (error) {
       console.error("Error submitting to Cronberry:", error);
