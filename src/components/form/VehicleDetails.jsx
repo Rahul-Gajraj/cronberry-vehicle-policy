@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { FUEL_TYPES } from "../../utils/constants";
 
 const VehicleDetails = ({
   defaultValues,
@@ -29,14 +30,25 @@ const VehicleDetails = ({
     defaultValues,
   });
 
-  const { products, manufacturerTypes, models, variences, fuelTypes } =
-    defaultValues;
+  const {
+    products,
+    manufacturerTypes,
+    models,
+    variences,
+    fuelTypes,
+    rtoStates,
+    rtoCities,
+    rtoStateCities,
+  } = defaultValues;
   const [options, setOptions] = useState({
     products,
     manufacturerTypes,
     models,
     variences,
     fuelTypes,
+    rtoStates,
+    rtoCities,
+    rtoStateCities,
   });
 
   const years = useMemo(() => {
@@ -49,22 +61,51 @@ const VehicleDetails = ({
     if (options.products.length == 0) {
       fetchProducts();
     }
+    if (options.rtoStates.length == 0) {
+      fetchRtoStatesAndCities();
+    }
   }, []);
 
   const proposalType = watch("proposalType");
+
+  const fetchRtoStatesAndCities = async () => {
+    await fetch("/rtoData.json")
+      .then((res) => res.json())
+      .then((data) => {
+        const rtoStates = Object.keys(data);
+        setOptions((prev) => ({
+          ...prev,
+          rtoStates: [...new Set(rtoStates)],
+          rtoStateCities: data,
+        }));
+      });
+  };
 
   const fetchProducts = async () => {
     await fetch("/productData.json")
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
-        setOptions((prev) => ({ ...prev, products: data }));
+        setOptions((prev) => ({
+          ...prev,
+          products: data.map((d) => {
+            return {
+              ...d,
+              product: d.product.toUpperCase(),
+            };
+          }),
+        }));
       });
   };
 
   const handleOptionsChange = (key, newValue) => {
     let updatedOptions = options;
     switch (key) {
+      case "rtoStates":
+        updatedOptions = {
+          ...updatedOptions,
+          rtoCities: [...new Set(options.rtoStateCities[newValue])],
+        };
+        setValue("rtoCity", "");
       case "products":
         updatedOptions = {
           ...updatedOptions,
@@ -422,7 +463,26 @@ const VehicleDetails = ({
               name="rtoState"
               control={control}
               rules={{ required: "This field is required" }}
-              render={({ field }) => <Input className="h-8" {...field} />}
+              render={({ field: { value, onChange } }) => (
+                <Select
+                  value={value}
+                  onValueChange={(newValue) => {
+                    newValue && onChange(newValue);
+                    newValue && handleOptionsChange("rtoStates", newValue);
+                  }}
+                >
+                  <SelectTrigger className="h-8 w-full">
+                    <SelectValue placeholder="Select State" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.rtoStates.map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
             {errors.rtoState && (
               <div className="flex">
@@ -436,7 +496,25 @@ const VehicleDetails = ({
               name="rtoCity"
               control={control}
               rules={{ required: "This field is required" }}
-              render={({ field }) => <Input className="h-8" {...field} />}
+              render={({ field: { value, onChange } }) => (
+                <Select
+                  value={value}
+                  onValueChange={(newValue) => {
+                    newValue && onChange(newValue);
+                  }}
+                >
+                  <SelectTrigger className="h-8 w-full">
+                    <SelectValue placeholder="Select City" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.rtoCities.map((p) => (
+                      <SelectItem key={p} value={p}>
+                        {p}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             />
             {errors.rtoCity && (
               <div className="flex">
@@ -599,7 +677,7 @@ const VehicleDetails = ({
                     <SelectValue placeholder="Select Varience" />
                   </SelectTrigger>
                   <SelectContent>
-                    {options.fuelTypes.map((m) => (
+                    {FUEL_TYPES.map((m) => (
                       <SelectItem key={m} value={m}>
                         {m}
                       </SelectItem>

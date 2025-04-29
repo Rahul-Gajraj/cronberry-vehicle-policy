@@ -42,6 +42,9 @@ export const FORM_DEFAULT_VALUES = {
     models: [],
     variences: [],
     fuelTypes: [],
+    rtoStates: [],
+    rtoCities: [],
+    rtoStateCities: {},
   },
   step3: {
     previousPolicyAvailable: "no",
@@ -70,7 +73,7 @@ export const FORM_DEFAULT_VALUES = {
     insurerName: "",
     policyIssueDate: "",
     ivd: "",
-    addon: "",
+    addon: [],
     odAmount: "",
     tpAmount: "",
     odTpAmount: "",
@@ -82,6 +85,11 @@ export const FORM_DEFAULT_VALUES = {
     insurers: [],
     addons: [],
     netPayable: "",
+    paCover: "no",
+    paCertificateNumber: "",
+    paStartDate: "",
+    paEndDate: "",
+    paCoverAmount: "",
   },
   step5: {
     modeOfInsurancePayment: [],
@@ -270,7 +278,7 @@ export const NET_BANKING_DETAILS = [
   "Priyanka Sharma - PNB BANK - S/A",
 ];
 
-export const FIELD_EXECUTIVES = ["Yashpal Chaudhary"];
+export const FIELD_EXECUTIVES = ["Yashpal Chaudhary", "Self Office"];
 
 export const CALL_EXECUTIVES = [
   "Varsha Singhal",
@@ -289,4 +297,12 @@ export const POLICY_UNDERWRITTER = [
   "Varsha Singhal",
   "Shiv Kumar Chaturvedi",
   "Abhishek",
+];
+
+export const FUEL_TYPES = [
+  "DIESEL",
+  "ELECTRIC",
+  "PETROL",
+  "PETROL HYBRID",
+  "CNG/LPG",
 ];

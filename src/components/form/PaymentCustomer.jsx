@@ -109,8 +109,8 @@ const PaymentCustomer = ({
                     <SelectItem value="Full Payment Received">
                       Full Payment Received
                     </SelectItem>
-                    <SelectItem value="Partical Payment Received">
-                      Partical Payment Received
+                    <SelectItem value="Partial Payment Received">
+                      Partial Payment Received
                     </SelectItem>
                     <SelectItem value="Total Amount Due">
                       Total Amount Due
@@ -126,28 +126,30 @@ const PaymentCustomer = ({
             )}
           </div>
 
-          <div>
-            <Label className="text-sm text-gray-600">
-              Date of Payment By Customer
-            </Label>
-            <Controller
-              name="dateOfCustomerPayment"
-              control={control}
-              rules={{ required: "This field is required" }}
-              render={({ field }) => (
-                <Input {...field} type="date" className="h-8" />
+          {paymentReceivedStatus != "Total Amount Due" && (
+            <div>
+              <Label className="text-sm text-gray-600">
+                Date of Payment By Customer
+              </Label>
+              <Controller
+                name="dateOfCustomerPayment"
+                control={control}
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <Input {...field} type="date" className="h-8" />
+                )}
+              />
+              {errors.dateOfCustomerPayment && (
+                <div className="flex">
+                  <p className="text-red-600">
+                    {errors.dateOfCustomerPayment.message}
+                  </p>
+                </div>
               )}
-            />
-            {errors.dateOfCustomerPayment && (
-              <div className="flex">
-                <p className="text-red-600">
-                  {errors.dateOfCustomerPayment.message}
-                </p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
 
-          {paymentReceivedStatus == "Partical Payment Received" && (
+          {paymentReceivedStatus != "Full Payment Received" && (
             <>
               <div>
                 <Label className="text-sm text-gray-600">

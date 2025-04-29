@@ -32,7 +32,7 @@ const PolicyDetails = ({
 
   const previousPolicyAvailable = watch("previousPolicyAvailable");
   const previousPolicyType = watch("previousPolicyType");
-  const previousClaim = watch("previousClaim");
+  const anyClaim = watch("anyClaim");
 
   const onSubmit = (data) => {
     onNextStepChange({
@@ -122,9 +122,7 @@ const PolicyDetails = ({
                         </div>
                       )}
                     </div>
-                    {policyType != "OD only Policy" ||
-                    (policyType == "OD only Policy" &&
-                      previousPolicyType == "Package Policy") ? (
+                    {previousPolicyType.length > 0 ? (
                       <>
                         <div>
                           <Label>Previous Insurer</Label>
@@ -253,9 +251,9 @@ const PolicyDetails = ({
                               )}
                             </div>
                             <div>
-                              <Label>Policy End Date</Label>
+                              <Label>Previoius Policy End Date</Label>
                               <Controller
-                                name="policyEndDate"
+                                name="previousPolicyEndDate"
                                 control={control}
                                 rules={{ required: "This field is required" }}
                                 render={({ field }) => (
@@ -267,10 +265,10 @@ const PolicyDetails = ({
                                   />
                                 )}
                               />
-                              {errors.policyEndDate && (
+                              {errors.previousPolicyEndDate && (
                                 <div className="flex">
                                   <p className="text-red-500 text-sm">
-                                    {errors.policyEndDate.message}
+                                    {errors.previousPolicyEndDate.message}
                                   </p>
                                 </div>
                               )}
@@ -306,7 +304,7 @@ const PolicyDetails = ({
                             </div>
                           )}
                         </div>
-                        {previousClaim === "No" && (
+                        {anyClaim === "no" && (
                           <div>
                             <Label>NCB %</Label>
                             <Controller
@@ -534,7 +532,7 @@ const PolicyDetails = ({
                             </div>
                           )}
                         </div>
-                        {previousClaim === "No" && (
+                        {anyClaim === "no" && (
                           <div>
                             <Label>NCB %</Label>
                             <Controller

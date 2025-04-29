@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { MultiSelect } from "primereact/multiselect";
+
 import {
   ADDONS_LIST,
   BROKERS_LIST,
@@ -24,6 +26,7 @@ const NewPolicyDetails = ({
   proposalType,
   policyType,
   previousClaim,
+  previousPolicyType,
 }) => {
   const {
     control,
@@ -43,6 +46,8 @@ const NewPolicyDetails = ({
     insurers,
     addons,
   });
+
+  const paCover = watch("paCover");
 
   useEffect(() => {
     if (options.brokers.length == 0) {
@@ -149,7 +154,7 @@ const NewPolicyDetails = ({
               <div>
                 <Label>New OD Policy End Date</Label>
                 <Controller
-                  name="newODPolicyStartDate"
+                  name="newODPolicyEndDate"
                   control={control}
                   rules={{ required: "This field is required" }}
                   render={({ field }) => (
@@ -161,10 +166,10 @@ const NewPolicyDetails = ({
                     />
                   )}
                 />
-                {errors.newODPolicyStartDate && (
+                {errors.newODPolicyEndDate && (
                   <div className="flex">
                     <p className="text-red-600">
-                      {errors.newODPolicyStartDate.message}
+                      {errors.newODPolicyEndDate.message}
                     </p>
                   </div>
                 )}
@@ -260,7 +265,6 @@ const NewPolicyDetails = ({
               )}
             </div>
           )}
-
           <div>
             <Label>Broker or Agency Name</Label>
             <Controller
@@ -386,15 +390,26 @@ const NewPolicyDetails = ({
             )}
           </div>
           <div>
-            <Label>Addon</Label>
+            <Label>PA Cover</Label>
             <Controller
-              name="addon"
+              name="paCover"
               control={control}
               rules={{ required: "This field is required" }}
               render={({ field: { value, onChange } }) => (
                 <Select
                   value={value}
                   onValueChange={(newValue) => {
+                    if (newValue == "no") {
+                      // const getPaCoverAmount = getValues("paCoverAmount");
+                      // const netPayable = getValues("netPayable");
+                      // const total =
+                      //   Number(netPayable) - Number(getPaCoverAmount);
+                      // setValue("netPayable", total);
+                      setValue("netPayable");
+                      setValue("paCertificateNumber", "");
+                      setValue("paEndDate", "");
+                      setValue("paStartDate", "");
+                    }
                     newValue && onChange(newValue);
                   }}
                 >
@@ -402,21 +417,185 @@ const NewPolicyDetails = ({
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[...new Set(options.addons.map((p) => p))].map((p) => (
-                      <SelectItem key={p} value={p}>
-                        {p}
-                      </SelectItem>
-                    ))}
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
-            {errors.addon && (
+            {errors.paCover && (
               <div className="flex">
-                <p className="text-red-600">{errors.addon.message}</p>
+                <p className="text-red-600">{errors.paCover.message}</p>
               </div>
             )}
           </div>
+          {paCover == "yes" && (
+            <>
+              <div>
+                <Label>PA Certificate Nnumber</Label>
+                <Controller
+                  name="paCertificateNumber"
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Input
+                      className="h-8"
+                      value={field.value}
+                      placeholder="Enter Certificate Amount"
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
+                  )}
+                />
+                {errors.paCertificateNumber && (
+                  <div className="flex">
+                    <p className="text-red-600">
+                      {errors.paCertificateNumber.message}
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div>
+                <Label>PA Start Date</Label>
+                <Controller
+                  name="paStartDate"
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Input
+                      className="h-8"
+                      value={field.value}
+                      type="date"
+                      placeholder="Select Date"
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
+                  )}
+                />
+                {errors.paStartDate && (
+                  <div className="flex">
+                    <p className="text-red-600">{errors.paStartDate.message}</p>
+                  </div>
+                )}
+              </div>
+              <div>
+                <Label>PA End Date</Label>
+                <Controller
+                  name="paEndDate"
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Input
+                      className="h-8"
+                      value={field.value}
+                      type="date"
+                      placeholder="Select Date"
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
+                  )}
+                />
+                {errors.paEndDate && (
+                  <div className="flex">
+                    <p className="text-red-600">{errors.paEndDate.message}</p>
+                  </div>
+                )}
+              </div>
+              <div>
+                <Label>PA Cover Amount</Label>
+                <Controller
+                  name="paCoverAmount"
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Input
+                      className="h-8"
+                      value={field.value}
+                      placeholder="Enter Amount"
+                      onChange={(e) => {
+                        const value =
+                          e.target.value.replace(/[^0-9]/g, "") || 0;
+                        const tpAmount = getValues("tpAmount") || 0;
+                        const odAmount = getValues("odAmount") || 0;
+                        const gstAmount = getValues("gstAmount") || 0;
+                        const breakingCharge = getValues("breakingCharge") || 0;
+                        const waiverAmount = getValues("waiverAmount") || 0;
+                        setValue(
+                          "netPayable",
+                          Number(tpAmount) +
+                            Number(gstAmount) +
+                            Number(odAmount) +
+                            Number(value) +
+                            Number(breakingCharge) -
+                            Number(waiverAmount)
+                        );
+
+                        field.onChange(value);
+                      }}
+                    />
+                  )}
+                />
+                {errors.paCoverAmount && (
+                  <div className="flex">
+                    <p className="text-red-600">
+                      {errors.paCoverAmount.message}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+          {previousPolicyType && previousPolicyType.includes("TP") && (
+            <div>
+              <Label>Addon</Label>
+
+              <Controller
+                name="addon"
+                control={control}
+                rules={{ required: "This field is required" }}
+                render={({ field: { value, onChange } }) => (
+                  // <Select
+                  //   value={value}
+                  //   onValueChange={(newValue) => {
+                  //     newValue && onChange(newValue);
+                  //   }}
+                  // >
+                  //   <SelectTrigger className="h-8 w-full">
+                  //     <SelectValue placeholder="Select" />
+                  //   </SelectTrigger>
+                  //   <SelectContent>
+                  //     {[...new Set(options.addons.map((p) => p))].map((p) => (
+                  //       <SelectItem key={p} value={p}>
+                  //         {p}
+                  //       </SelectItem>
+                  //     ))}
+                  //   </SelectContent>
+                  // </Select>
+                  <MultiSelect
+                    value={value}
+                    onChange={(e) => {
+                      onChange(e.value ?? []);
+                    }}
+                    options={options.addons}
+                    // optionLabel="label"
+                    // placeholder="Select Addons"
+                    display="chip"
+                    filter
+                    className="w-full p-multiselect h-[32px]"
+                    panelClassName="max-h-60 overflow-y-auto"
+                  />
+                )}
+              />
+              {errors.addon && (
+                <div className="flex">
+                  <p className="text-red-600">{errors.addon.message}</p>
+                </div>
+              )}
+            </div>
+          )}
           <div>
             <Label>OD Amount</Label>
             <Controller

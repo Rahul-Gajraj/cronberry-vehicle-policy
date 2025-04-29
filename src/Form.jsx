@@ -99,6 +99,11 @@ export default function CustomerDetailsForm() {
       breakingCharge,
       waiverAmount,
       netPayable,
+      paCover,
+      paCertificateNumber,
+      paStartDate,
+      paEndDate,
+      paCoverAmount,
     } = multiStepFormData.step4;
     const {
       modeOfInsurancePayment,
@@ -619,7 +624,7 @@ export default function CustomerDetailsForm() {
         },
         {
           paramKey: "addon",
-          paramValue: addon,
+          paramValue: addon.join(","),
         },
         {
           paramKey: "registration_number",
@@ -779,6 +784,26 @@ export default function CustomerDetailsForm() {
           paramKey: "policy_underwriter_executive_reference",
           paramValue: policyUnderwritterExecutive,
         },
+        {
+          paramKey: "pa_cover",
+          paramValue: paCover,
+        },
+        {
+          paramKey: "pa_certificate_number",
+          paramValue: paCertificateNumber,
+        },
+        {
+          paramKey: "pa_start_date",
+          paramValue: paStartDate,
+        },
+        {
+          paramKey: "pa_end_date",
+          paramValue: paEndDate,
+        },
+        {
+          paramKey: "pa_cover_amount",
+          paramValue: paCoverAmount,
+        },
       ],
     };
 
@@ -889,6 +914,7 @@ export default function CustomerDetailsForm() {
             proposalType={multiStepFormData.step2.proposalType}
             policyType={multiStepFormData.step2.policyType}
             previousClaim={multiStepFormData.step3.anyClaim}
+            previousPolicyType={multiStepFormData.step3.previousPolicyType}
           />
         );
       case 5:
