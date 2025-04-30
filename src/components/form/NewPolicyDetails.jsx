@@ -548,7 +548,7 @@ const NewPolicyDetails = ({
               </div>
             </>
           )}
-          {previousPolicyType && previousPolicyType.includes("TP") && (
+          {policyType && !policyType.includes("TP") && (
             <div>
               <Label>Addon</Label>
 
@@ -584,8 +584,8 @@ const NewPolicyDetails = ({
                     // placeholder="Select Addons"
                     display="chip"
                     filter
-                    className="w-full p-multiselect h-[32px]"
-                    panelClassName="max-h-60 overflow-y-auto"
+                    className="w-full md:w-20rem"
+                    // panelClassName="max-h-60 overflow-y-auto"
                   />
                 )}
               />
@@ -613,6 +613,7 @@ const NewPolicyDetails = ({
                     const gstAmount = getValues("gstAmount") || 0;
                     const breakingCharge = getValues("breakingCharge") || 0;
                     const waiverAmount = getValues("waiverAmount") || 0;
+                    const paCoverAmount = getValues("paCoverAmount") || 0;
                     setValue("odTpAmount", Number(tpAmount) + Number(value));
                     setValue(
                       "totalPremiumWithGST",
@@ -623,6 +624,7 @@ const NewPolicyDetails = ({
                       Number(tpAmount) +
                         Number(gstAmount) +
                         Number(value) +
+                        Number(paCoverAmount) +
                         Number(breakingCharge) -
                         Number(waiverAmount)
                     );
@@ -655,6 +657,7 @@ const NewPolicyDetails = ({
                     const gstAmount = getValues("gstAmount") || 0;
                     const breakingCharge = getValues("breakingCharge") || 0;
                     const waiverAmount = getValues("waiverAmount") || 0;
+                    const paCoverAmount = getValues("paCoverAmount") || 0;
                     setValue("odTpAmount", Number(odAmount) + Number(value));
                     setValue(
                       "totalPremiumWithGST",
@@ -665,6 +668,7 @@ const NewPolicyDetails = ({
                       Number(odAmount) +
                         Number(gstAmount) +
                         Number(value) +
+                        Number(paCoverAmount) +
                         Number(breakingCharge) -
                         Number(waiverAmount)
                     );
@@ -717,6 +721,7 @@ const NewPolicyDetails = ({
                     const tpAmount = getValues("tpAmount") || 0;
                     const breakingCharge = getValues("breakingCharge") || 0;
                     const waiverAmount = getValues("waiverAmount") || 0;
+                    const paCoverAmount = getValues("paCoverAmount") || 0;
                     setValue(
                       "totalPremiumWithGST",
                       Number(odAmount) + Number(tpAmount) + Number(value)
@@ -726,6 +731,7 @@ const NewPolicyDetails = ({
                       Number(odAmount) +
                         Number(tpAmount) +
                         Number(value) +
+                        Number(paCoverAmount) +
                         Number(breakingCharge) -
                         Number(waiverAmount)
                     );
@@ -780,11 +786,13 @@ const NewPolicyDetails = ({
                     const tpAmount = getValues("tpAmount") || 0;
                     const gstAmount = getValues("gstAmount") || 0;
                     const waiverAmount = getValues("waiverAmount") || 0;
+                    const paCoverAmount = getValues("paCoverAmount") || 0;
                     setValue(
                       "netPayable",
                       Number(odAmount) +
                         Number(tpAmount) +
                         Number(value) +
+                        Number(paCoverAmount) +
                         Number(gstAmount) -
                         Number(waiverAmount)
                     );
@@ -816,11 +824,13 @@ const NewPolicyDetails = ({
                     const tpAmount = getValues("tpAmount") || 0;
                     const gstAmount = getValues("gstAmount") || 0;
                     const breakingCharge = getValues("breakingCharge") || 0;
+                    const paCoverAmount = getValues("paCoverAmount") || 0;
                     setValue(
                       "netPayable",
                       Number(odAmount) +
                         Number(tpAmount) +
                         Number(gstAmount) +
+                        Number(paCoverAmount) +
                         Number(breakingCharge) -
                         Number(value)
                     );
