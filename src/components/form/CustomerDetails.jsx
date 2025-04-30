@@ -33,18 +33,35 @@ const CustomerDetails = ({ defaultValues, onNextStepChange }) => {
     if (pincode.length === 6) {
       try {
         const res = await fetch(
-          `https://api.postalpincode.in/pincode/${pincode}`
+          // `https://api.postalpincode.in/pincode/${pincode}`
+          `https://apiv2.shiprocket.in/v1/external/open/postcode/details?postcode=${pincode}`
         );
         const data = await res.json();
-        if (data[0].Status === "Success") {
-          const postOffice = data[0].PostOffice[0];
+        // if (data[0].Status === "Success") {
+        //   const postOffice = data[0].PostOffice[0];
 
-          setValue("country", "India");
-          setValue("state", postOffice.State);
-          setValue("city", postOffice.District);
-          setLocalities(data[0].PostOffice.map((p) => p.Name));
+        //   setValue("country", "India");
+        //   setValue("state", postOffice.State);
+        //   setValue("city", postOffice.District);
+        //   setLocalities(data[0].PostOffice.map((p) => p.Name));
+        //   setTimeout(() => {
+        //     setValue("locality", data[0].PostOffice[0].Name);
+        //   }, 0);
+        // } else {
+        //   setValue("country", "");
+        //   setValue("state", "");
+        //   setValue("city", "");
+        //   setLocalities([]);
+        //   setValue("locality", "");
+        // }
+        if (data.success) {
+          const postcodeDetails = data.postcode_details;
+          setValue("country", postcodeDetails.country);
+          setValue("state", postcodeDetails.state);
+          setValue("city", postcodeDetails.city);
+          setLocalities(postcodeDetails.locality);
           setTimeout(() => {
-            setValue("locality", data[0].PostOffice[0].Name);
+            setValue("locality", postcodeDetails.locality[0]);
           }, 0);
         } else {
           setValue("country", "");
