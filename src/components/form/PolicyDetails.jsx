@@ -23,8 +23,6 @@ const PolicyDetails = ({
   const {
     control,
     watch,
-    setValue,
-    register,
     handleSubmit,
     formState: { errors },
   } = useForm({
