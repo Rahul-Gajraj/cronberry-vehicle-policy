@@ -50,6 +50,7 @@ export const FORM_DEFAULT_VALUES = {
     previousPolicyAvailable: "no",
     previousPolicyType: "",
     previousInsurer: "",
+    insurers: [],
     policyNumber: "",
     previousPolicyStartDate: "",
     previousPolicyEndDate: "",

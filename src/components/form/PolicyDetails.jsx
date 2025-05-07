@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { INSURERS_LIST } from "../../utils/constants";
 
 const PolicyDetails = ({
   defaultValues,
@@ -30,9 +31,19 @@ const PolicyDetails = ({
     defaultValues,
   });
 
+  const [options, setOptions] = useState({
+    insurers: defaultValues.insurers,
+  });
+
   const previousPolicyAvailable = watch("previousPolicyAvailable");
   const previousPolicyType = watch("previousPolicyType");
   const anyClaim = watch("anyClaim");
+
+  useEffect(() => {
+    if (options.insurers.length == 0) {
+      setOptions((prev) => ({ ...prev, insurers: INSURERS_LIST }));
+    }
+  }, []);
 
   const onSubmit = (data) => {
     onNextStepChange({
@@ -130,13 +141,32 @@ const PolicyDetails = ({
                             name="previousInsurer"
                             control={control}
                             rules={{ required: "This field is required" }}
-                            render={({ field }) => (
-                              <Input
-                                value={field.value}
-                                onChange={field.onChange}
-                                className="h-8"
-                                placeholder="Previous Insurer"
-                              />
+                            render={({ field: { value, onChange } }) => (
+                              // <Input
+                              //   value={field.value}
+                              //   onChange={field.onChange}
+                              //   className="h-8"
+                              //   placeholder="Previous Insurer"
+                              // />
+                              <Select
+                                value={value}
+                                onValueChange={(newValue) => {
+                                  newValue && onChange(newValue);
+                                }}
+                              >
+                                <SelectTrigger className="h-8 w-full">
+                                  <SelectValue placeholder="Previous Insurer" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {[
+                                    ...new Set(options.insurers.map((p) => p)),
+                                  ].map((p) => (
+                                    <SelectItem key={p} value={p}>
+                                      {p}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                             )}
                           />
                           {errors.previousInsurer && (
