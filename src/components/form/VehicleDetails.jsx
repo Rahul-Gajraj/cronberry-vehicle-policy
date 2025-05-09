@@ -85,15 +85,48 @@ const VehicleDetails = ({
     await fetch("/productData.json")
       .then((res) => res.json())
       .then((data) => {
+        const productsData = data.map((d) => {
+          return {
+            ...d,
+            product: d.product.toUpperCase(),
+          };
+        });
+        fetchMoreProducts(productsData);
+        // setOptions((prev) => ({
+        //   ...prev,
+        //   products: data.map((d) => {
+        //     return {
+        //       ...d,
+        //       product: d.product.toUpperCase(),
+        //     };
+        //   }),
+        // }));
+      });
+  };
+
+  const fetchMoreProducts = async (productsData) => {
+    await fetch(
+      "https://opensheet.elk.sh/1eilWnuBv9oOAxhjc_xvW8SwuXrEs-MP8O_-Qo2c_OaM/Sheet1"
+    )
+      .then((res) => res.json())
+      .then((data) => {
         setOptions((prev) => ({
           ...prev,
-          products: data.map((d) => {
-            return {
-              ...d,
-              product: d.product.toUpperCase(),
-            };
-          }),
+          products: [
+            ...new Set([
+              ...productsData,
+              ...data.map((d) => {
+                return {
+                  ...d,
+                  product: d.product.toUpperCase(),
+                };
+              }),
+            ]),
+          ],
         }));
+      })
+      .catch((err) => {
+        toast.error("Unable to fetch data from sheet");
       });
   };
 
