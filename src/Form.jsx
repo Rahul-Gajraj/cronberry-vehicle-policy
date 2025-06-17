@@ -153,17 +153,25 @@ export default function CustomerDetailsForm() {
     } = data;
 
     const payload = {
-      projectKey: "VW50aXRsZSBQcm9qZWN0MTc0MDM4ODgxMjc0NQ==",
-      audienceId: "_id (number)",
-      audience_id: "",
-      ios_fcm_token: "",
-      email: "",
-      android_fcm_token: "",
-      name: customerName,
-      updated: "",
-      web_fcm_token: "",
-      mobile: primaryPhone,
+      // projectKey: "VW50aXRsZSBQcm9qZWN0MTc0MDM4ODgxMjc0NQ==",
+      // audienceId: "_id (number)",
+      // audience_id: "",
+      // ios_fcm_token: "",
+      // email: "",
+      // android_fcm_token: "",
+      // name: customerName,
+      // updated: "",
+      // web_fcm_token: "",
+      // mobile: primaryPhone,
       paramList: [
+        {
+          paramKey: "name",
+          paramValue: customerName,
+        },
+        {
+          paramKey: "mobile",
+          paramValue: primaryPhone,
+        },
         {
           paramKey: "google_pay_amount_paid_by_customer",
           paramValue: customerGooglePayAmount,
@@ -807,6 +815,11 @@ export default function CustomerDetailsForm() {
       ],
     };
 
+    const body = payload.paramList.reduce((acc, cv) => {
+      acc[cv.paramKey] = cv.paramValue;
+      return acc;
+    }, {});
+
     try {
       const response = await fetch(
         // "https://register.cronberry.com/api/campaign/register-audience-data",
@@ -816,7 +829,7 @@ export default function CustomerDetailsForm() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(body),
         }
       );
       const data = await response.json();
