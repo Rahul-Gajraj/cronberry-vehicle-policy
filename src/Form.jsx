@@ -809,7 +809,8 @@ export default function CustomerDetailsForm() {
 
     try {
       const response = await fetch(
-        "https://register.cronberry.com/api/campaign/register-audience-data",
+        // "https://register.cronberry.com/api/campaign/register-audience-data",
+        "https://marketplace.cronberry.com/api/leads/webhook/8a4105396df14da6",
         {
           method: "POST",
           headers: {
