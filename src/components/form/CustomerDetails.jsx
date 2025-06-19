@@ -335,6 +335,72 @@ const CustomerDetails = ({ defaultValues, onNextStepChange }) => {
         </div>
 
         <div>
+          <Label>Contact 3</Label>
+          <Controller
+            name="contact3"
+            control={control}
+            rules={{
+              // required: "This field is required",
+              minLength: {
+                value: 10,
+                message: "Enter 10 digit number",
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                className="h-8"
+                placeholder="Enter 10 Digit Contact Number"
+                value={field.value}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  if (value.length <= 10) {
+                    field.onChange(value);
+                  }
+                }}
+              />
+            )}
+          />
+          {errors.contact3 && (
+            <div className="flex">
+              <p className="text-red-600">{errors.contact3.message}</p>
+            </div>
+          )}
+        </div>
+
+        <div>
+          <Label>Contact 4</Label>
+          <Controller
+            name="contact4"
+            control={control}
+            rules={{
+              // required: "This field is required",
+              minLength: {
+                value: 10,
+                message: "Enter 10 digit number",
+              },
+            }}
+            render={({ field }) => (
+              <Input
+                className="h-8"
+                placeholder="Enter 10 Digit Contact Number"
+                value={field.value}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, "");
+                  if (value.length <= 10) {
+                    field.onChange(value);
+                  }
+                }}
+              />
+            )}
+          />
+          {errors.contact4 && (
+            <div className="flex">
+              <p className="text-red-600">{errors.contact4.message}</p>
+            </div>
+          )}
+        </div>
+
+        <div>
           <Label>Pincode</Label>
           <Controller
             name="pincode"

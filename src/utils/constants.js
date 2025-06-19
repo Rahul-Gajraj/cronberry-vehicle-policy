@@ -10,6 +10,8 @@ export const FORM_DEFAULT_VALUES = {
     primaryPhone: "",
     whatsappSame: "yes",
     whatsappNumber: "",
+    contact3: "",
+    contact4: "",
     pincode: "",
     country: "",
     state: "",
@@ -137,6 +139,7 @@ export const FORM_DEFAULT_VALUES = {
     pucStartDate: "",
     pucEndDate: "",
     remarks: "",
+    pucAvailable: "no",
   },
 };
 

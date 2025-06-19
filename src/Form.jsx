@@ -43,6 +43,8 @@ export default function CustomerDetailsForm() {
       locality,
       address,
       serviceNumber,
+      contact3,
+      contact4,
     } = multiStepFormData.step1;
     const {
       proposalType,
@@ -150,6 +152,7 @@ export default function CustomerDetailsForm() {
       pucStartDate,
       pucEndDate,
       remarks,
+      pucAvailable,
     } = data;
 
     const payload = {
@@ -819,6 +822,13 @@ export default function CustomerDetailsForm() {
       acc[cv.paramKey] = cv.paramValue;
       return acc;
     }, {});
+    body["puc_available"] = pucAvailable;
+    if (contact3 && contact3.length > 0) {
+      body["contact_3"] = contact3;
+    }
+    if (contact4 && contact4.length > 0) {
+      body["contact_4"] = contact4;
+    }
 
     try {
       const response = await fetch(

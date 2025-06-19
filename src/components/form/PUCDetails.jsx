@@ -37,6 +37,8 @@ const PUCDetails = ({
     defaultValues,
   });
 
+  const pucAvailable = watch("pucAvailable");
+
   const onSubmit = (data) => {
     handleFormSubmit({
       ...defaultValues,
@@ -148,54 +150,94 @@ const PUCDetails = ({
               )}
             </div>
             <div>
-              <Label className="text-sm text-gray-600">
-                PUC Certificate Number
-              </Label>
+              <Label>PUC Available</Label>
               <Controller
-                name="pucCertificate"
+                name="pucAvailable"
                 control={control}
                 rules={{ required: "This field is required" }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="h-8"
-                    placeholder="Enter PUC Certificate Number"
-                  />
+                render={({ field: { value, onChange } }) => (
+                  <Select
+                    value={value}
+                    onValueChange={(newValue) => {
+                      if (newValue) {
+                        setValue("pucCertificate", "");
+                        setValue("pucStartDate", "");
+                        setValue("pucEndDate", "");
+                        onChange(newValue);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-full">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="yes">Yes</SelectItem>
+                      <SelectItem value="no">No</SelectItem>
+                    </SelectContent>
+                  </Select>
                 )}
               />
+              {errors.pucAvailable && (
+                <div className="flex">
+                  <p className="text-red-600">{errors.pucAvailable.message}</p>
+                </div>
+              )}
             </div>
-            <div>
-              <Label className="text-sm text-gray-600">PUC Start Date</Label>
-              <Controller
-                name="pucStartDate"
-                control={control}
-                rules={{ required: "This field is required" }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="date"
-                    className="h-8"
-                    placeholder="Enter PUC Certificate Number"
+            {pucAvailable == "yes" && (
+              <>
+                <div>
+                  <Label className="text-sm text-gray-600">
+                    PUC Certificate Number
+                  </Label>
+                  <Controller
+                    name="pucCertificate"
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        className="h-8"
+                        placeholder="Enter PUC Certificate Number"
+                      />
+                    )}
                   />
-                )}
-              />
-            </div>
-            <div>
-              <Label className="text-sm text-gray-600">PUC End Date</Label>
-              <Controller
-                name="pucEndDate"
-                control={control}
-                rules={{ required: "This field is required" }}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    type="date"
-                    className="h-8"
-                    placeholder="Enter PUC Certificate Number"
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">
+                    PUC Start Date
+                  </Label>
+                  <Controller
+                    name="pucStartDate"
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="date"
+                        className="h-8"
+                        placeholder="Enter PUC Certificate Number"
+                      />
+                    )}
                   />
-                )}
-              />
-            </div>
+                </div>
+                <div>
+                  <Label className="text-sm text-gray-600">PUC End Date</Label>
+                  <Controller
+                    name="pucEndDate"
+                    control={control}
+                    rules={{ required: "This field is required" }}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        type="date"
+                        className="h-8"
+                        placeholder="Enter PUC Certificate Number"
+                      />
+                    )}
+                  />
+                </div>
+              </>
+            )}
           </div>
           <div>
             <Label className="text-sm text-gray-600">Remarks</Label>

@@ -231,39 +231,45 @@ const NewPolicyDetails = ({
               </div>
             </>
           )}
-          {previousClaim === "no" && (
-            <div>
-              <Label>NCB For New Policy</Label>
-              <Controller
-                name="newNcb"
-                control={control}
-                rules={{ required: "This field is required" }}
-                render={({ field: { value, onChange } }) => (
-                  <Select
-                    value={value}
-                    onValueChange={(newValue) => {
-                      newValue && onChange(newValue);
-                    }}
-                  >
-                    <SelectTrigger className="h-8 w-full">
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {["0", "20", "25", "35", "45", "50"].map((n) => (
-                        <SelectItem key={n} value={n}>
-                          {n}%
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+          {proposalType == "Renewal" &&
+          policyType == "TP Only Policy" &&
+          previousPolicyType == "TP Policy" ? (
+            <></>
+          ) : (
+            previousClaim === "no" && (
+              <div>
+                <Label>NCB For New Policy</Label>
+                <Controller
+                  name="newNcb"
+                  control={control}
+                  rules={{ required: "This field is required" }}
+                  render={({ field: { value, onChange } }) => (
+                    <Select
+                      value={value}
+                      onValueChange={(newValue) => {
+                        newValue && onChange(newValue);
+                      }}
+                    >
+                      <SelectTrigger className="h-8 w-full">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {["0", "20", "25", "35", "45", "50"].map((n) => (
+                          <SelectItem key={n} value={n}>
+                            {n}%
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.newNcb && (
+                  <div className="flex">
+                    <p className="text-red-600">{errors.newNcb.message}</p>
+                  </div>
                 )}
-              />
-              {errors.newNcb && (
-                <div className="flex">
-                  <p className="text-red-600">{errors.newNcb.message}</p>
-                </div>
-              )}
-            </div>
+              </div>
+            )
           )}
           <div>
             <Label>Broker or Agency Name</Label>
@@ -365,30 +371,43 @@ const NewPolicyDetails = ({
               </div>
             )}
           </div>
-          <div>
-            <Label>IDV (Insured Declared Value)</Label>
-            <Controller
-              name="ivd"
-              control={control}
-              rules={{ required: "This field is required" }}
-              render={({ field }) => (
-                <Input
-                  className="h-8"
-                  value={field.value}
-                  placeholder="Enter Amount"
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9]/g, "");
-                    field.onChange(value);
-                  }}
-                />
+          {proposalType == "Renewal" &&
+          policyType == "TP Only Policy" &&
+          previousPolicyType == "TP Policy" ? (
+            <></>
+          ) : (
+            <div>
+              <Label>IDV (Insured Declared Value)</Label>
+              <Controller
+                name="ivd"
+                control={control}
+                rules={{
+                  required:
+                    proposalType == "Renewal" &&
+                    policyType == "TP Only Policy" &&
+                    previousPolicyType == "TP Policy"
+                      ? false
+                      : "This field is required",
+                }}
+                render={({ field }) => (
+                  <Input
+                    className="h-8"
+                    value={field.value}
+                    placeholder="Enter Amount"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "");
+                      field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+              {errors.ivd && (
+                <div className="flex">
+                  <p className="text-red-600">{errors.ivd.message}</p>
+                </div>
               )}
-            />
-            {errors.ivd && (
-              <div className="flex">
-                <p className="text-red-600">{errors.ivd.message}</p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
           <div>
             <Label>PA Cover</Label>
             <Controller
@@ -596,50 +615,63 @@ const NewPolicyDetails = ({
               )}
             </div>
           )}
-          <div>
-            <Label>OD Amount</Label>
-            <Controller
-              name="odAmount"
-              control={control}
-              rules={{ required: "This field is required" }}
-              render={({ field }) => (
-                <Input
-                  className="h-8"
-                  value={field.value}
-                  placeholder="Enter Amount"
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/[^0-9]/g, "") || 0;
-                    const tpAmount = getValues("tpAmount") || 0;
-                    const gstAmount = getValues("gstAmount") || 0;
-                    const breakingCharge = getValues("breakingCharge") || 0;
-                    const waiverAmount = getValues("waiverAmount") || 0;
-                    const paCoverAmount = getValues("paCoverAmount") || 0;
-                    setValue("odTpAmount", Number(tpAmount) + Number(value));
-                    setValue(
-                      "totalPremiumWithGST",
-                      Number(tpAmount) + Number(gstAmount) + Number(value)
-                    );
-                    setValue(
-                      "netPayable",
-                      Number(tpAmount) +
-                        Number(gstAmount) +
-                        Number(value) +
-                        Number(paCoverAmount) +
-                        Number(breakingCharge) -
-                        Number(waiverAmount)
-                    );
+          {proposalType == "Renewal" &&
+          policyType == "TP Only Policy" &&
+          previousPolicyType == "TP Policy" ? (
+            <></>
+          ) : (
+            <div>
+              <Label>OD Amount</Label>
+              <Controller
+                name="odAmount"
+                control={control}
+                rules={{
+                  required:
+                    proposalType == "Renewal" &&
+                    policyType == "TP Only Policy" &&
+                    previousPolicyType == "TP Policy"
+                      ? false
+                      : "This field is required",
+                }}
+                render={({ field }) => (
+                  <Input
+                    className="h-8"
+                    value={field.value}
+                    placeholder="Enter Amount"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/[^0-9]/g, "") || 0;
+                      const tpAmount = getValues("tpAmount") || 0;
+                      const gstAmount = getValues("gstAmount") || 0;
+                      const breakingCharge = getValues("breakingCharge") || 0;
+                      const waiverAmount = getValues("waiverAmount") || 0;
+                      const paCoverAmount = getValues("paCoverAmount") || 0;
+                      setValue("odTpAmount", Number(tpAmount) + Number(value));
+                      setValue(
+                        "totalPremiumWithGST",
+                        Number(tpAmount) + Number(gstAmount) + Number(value)
+                      );
+                      setValue(
+                        "netPayable",
+                        Number(tpAmount) +
+                          Number(gstAmount) +
+                          Number(value) +
+                          Number(paCoverAmount) +
+                          Number(breakingCharge) -
+                          Number(waiverAmount)
+                      );
 
-                    field.onChange(value);
-                  }}
-                />
+                      field.onChange(value);
+                    }}
+                  />
+                )}
+              />
+              {errors.odAmount && (
+                <div className="flex">
+                  <p className="text-red-600">{errors.odAmount.message}</p>
+                </div>
               )}
-            />
-            {errors.odAmount && (
-              <div className="flex">
-                <p className="text-red-600">{errors.odAmount.message}</p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
           <div>
             <Label>TP Amount</Label>
             <Controller
@@ -812,7 +844,7 @@ const NewPolicyDetails = ({
             <Controller
               name="waiverAmount"
               control={control}
-              rules={{ required: "This field is required" }}
+              // rules={{ required: "This field is required" }}
               render={({ field }) => (
                 <Input
                   className="h-8"
